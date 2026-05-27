@@ -2,6 +2,8 @@
 
 Official TypeScript / JavaScript client for [Hivehook](https://hivehook.com), webhook infrastructure for modern teams (inbound and outbound).
 
+Latest release: **0.1.1** on [npm](https://www.npmjs.com/package/@hivehook/sdk).
+
 ## Install
 
 ```bash
