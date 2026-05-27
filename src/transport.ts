@@ -16,7 +16,7 @@ interface GraphQLResponse<T = unknown> {
   }>;
 }
 
-export const SDK_VERSION = "0.1.0";
+export const SDK_VERSION = "0.1.1";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_MAX_RETRIES = 2;

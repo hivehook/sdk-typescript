@@ -1,5 +1,6 @@
 import type { User, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface InviteUserInput {
   email: string;
@@ -98,5 +99,9 @@ export class UserService {
   async updateRole(id: string, input: UpdateUserRoleInput): Promise<User> {
     const data = await this.transport.execute<{ updateUserRole: User }>(UPDATE_ROLE_MUTATION, { id, input });
     return data.updateUserRole;
+  }
+
+  iterate(options?: ListUsersOptions): AsyncGenerator<User, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

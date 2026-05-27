@@ -1,5 +1,6 @@
 import type { AuditLog, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListAuditLogsOptions extends ListOptions {
   actorType?: string;
@@ -69,5 +70,9 @@ export class AuditLogService {
   async get(id: string): Promise<AuditLog | null> {
     const data = await this.transport.execute<{ auditLog: AuditLog | null }>(GET_QUERY, { id });
     return data.auditLog;
+  }
+
+  iterate(options?: ListAuditLogsOptions): AsyncGenerator<AuditLog, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

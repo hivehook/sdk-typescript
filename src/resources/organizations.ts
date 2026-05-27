@@ -1,5 +1,6 @@
 import type { Organization, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateOrganizationInput {
   name: string;
@@ -193,5 +194,9 @@ export class OrganizationService {
   async disableOTLP(organizationId: string): Promise<Organization> {
     const data = await this.transport.execute<{ disableOTLP: Organization }>(DISABLE_OTLP_MUTATION, { organizationId });
     return data.disableOTLP;
+  }
+
+  iterate(options?: ListOptions): AsyncGenerator<Organization, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

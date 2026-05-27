@@ -1,5 +1,6 @@
 import type { OutboundDelivery, DeliveryStatus, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListOutboundDeliveriesOptions extends ListOptions {
   messageId?: string;
@@ -71,5 +72,9 @@ export class OutboundDeliveryService {
   async get(id: string): Promise<OutboundDelivery | null> {
     const data = await this.transport.execute<{ outboundDelivery: OutboundDelivery | null }>(GET_QUERY, { id });
     return data.outboundDelivery;
+  }
+
+  iterate(options?: ListOutboundDeliveriesOptions): AsyncGenerator<OutboundDelivery, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

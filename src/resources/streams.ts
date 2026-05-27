@@ -1,5 +1,6 @@
 import type { PageInfo, ListOptions, Stream, StreamStatus } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export type { Stream };
 
@@ -103,5 +104,9 @@ export class StreamService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteStream: boolean }>(DELETE_MUTATION, { id });
     return data.deleteStream;
+  }
+
+  iterate(options?: ListStreamsOptions): AsyncGenerator<Stream, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

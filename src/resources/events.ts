@@ -1,5 +1,6 @@
 import type { Event, EventStatus, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListEventsOptions extends ListOptions {
   sourceId?: string;
@@ -59,5 +60,9 @@ export class EventService {
   async get(id: string): Promise<Event | null> {
     const data = await this.transport.execute<{ event: Event | null }>(GET_QUERY, { id });
     return data.event;
+  }
+
+  iterate(options?: ListEventsOptions): AsyncGenerator<Event, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

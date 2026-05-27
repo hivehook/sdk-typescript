@@ -1,5 +1,6 @@
 import type { Source, SourceStatus, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport, ExecuteOptions } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateSourceInput {
   name: string;
@@ -139,5 +140,9 @@ export class SourceService {
   async clearSecondarySecret(id: string): Promise<Source> {
     const data = await this.transport.execute<{ clearSourceSecondarySecret: Source }>(CLEAR_SECONDARY_SECRET_MUTATION, { id });
     return data.clearSourceSecondarySecret;
+  }
+
+  iterate(options?: ListSourcesOptions): AsyncGenerator<Source, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

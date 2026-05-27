@@ -1,5 +1,6 @@
 import type { DLQEntry, ReplayResult, PurgeResult, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListDLQOptions extends ListOptions {
   eventId?: string;
@@ -77,5 +78,9 @@ export class DLQService {
   async purge(olderThan?: string): Promise<PurgeResult> {
     const data = await this.transport.execute<{ purgeDLQ: PurgeResult }>(PURGE_MUTATION, { olderThan: olderThan ?? "168h" });
     return data.purgeDLQ;
+  }
+
+  iterate(options?: ListDLQOptions): AsyncGenerator<DLQEntry, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

@@ -1,5 +1,6 @@
 import type { Application, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateApplicationInput {
   name: string;
@@ -87,5 +88,9 @@ export class ApplicationService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteApplication: boolean }>(DELETE_MUTATION, { id });
     return data.deleteApplication;
+  }
+
+  iterate(options?: ListOptions): AsyncGenerator<Application, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

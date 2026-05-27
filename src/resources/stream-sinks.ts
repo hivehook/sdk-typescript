@@ -1,5 +1,6 @@
 import type { PageInfo, ListOptions, StreamSink, SinkType, SinkStatus } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export type { StreamSink };
 
@@ -110,5 +111,9 @@ export class StreamSinkService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteStreamSink: boolean }>(DELETE_MUTATION, { id });
     return data.deleteStreamSink;
+  }
+
+  iterate(streamId: string, options?: ListStreamSinksOptions): AsyncGenerator<StreamSink, void, unknown> {
+    return paginate((o) => this.list(streamId, o), options);
   }
 }

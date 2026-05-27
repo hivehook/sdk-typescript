@@ -1,5 +1,6 @@
 import type { OutboundDLQEntry, ReplayResult, PurgeResult, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListOutboundDLQOptions extends ListOptions {
   messageId?: string;
@@ -77,5 +78,9 @@ export class OutboundDLQService {
   async purge(olderThan?: string): Promise<PurgeResult> {
     const data = await this.transport.execute<{ purgeOutboundDlq: PurgeResult }>(PURGE_MUTATION, { olderThan: olderThan ?? "168h" });
     return data.purgeOutboundDlq;
+  }
+
+  iterate(options?: ListOutboundDLQOptions): AsyncGenerator<OutboundDLQEntry, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

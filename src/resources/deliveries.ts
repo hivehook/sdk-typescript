@@ -1,5 +1,6 @@
 import type { Delivery, DeliveryStatus, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface ListDeliveriesOptions extends ListOptions {
   eventId?: string;
@@ -74,5 +75,9 @@ export class DeliveryService {
   async get(id: string): Promise<Delivery | null> {
     const data = await this.transport.execute<{ delivery: Delivery | null }>(GET_QUERY, { id });
     return data.delivery;
+  }
+
+  iterate(options?: ListDeliveriesOptions): AsyncGenerator<Delivery, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

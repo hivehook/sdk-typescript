@@ -1,5 +1,6 @@
 import type { Subscription, FilterConfig, TransformConfig, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateSubscriptionInput {
   name: string;
@@ -130,5 +131,9 @@ export class SubscriptionService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteSubscription: boolean }>(DELETE_MUTATION, { id });
     return data.deleteSubscription;
+  }
+
+  iterate(options?: ListSubscriptionsOptions): AsyncGenerator<Subscription, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

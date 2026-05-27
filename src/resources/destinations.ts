@@ -1,5 +1,6 @@
 import type { Destination, DestinationStatus, DestinationType, RetryPolicy, PageInfo, ListOptions, AuthType, OAuth2Config, DeliveryMode, Delivery, HealthConfig } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateDestinationInput {
   name: string;
@@ -221,5 +222,9 @@ export class DestinationService {
   async regeneratePollApiKey(destinationId: string): Promise<Destination> {
     const data = await this.transport.execute<{ regeneratePollApiKey: Destination }>(REGENERATE_POLL_API_KEY_MUTATION, { destinationId });
     return data.regeneratePollApiKey;
+  }
+
+  iterate(options?: ListDestinationsOptions): AsyncGenerator<Destination, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

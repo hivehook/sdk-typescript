@@ -1,5 +1,6 @@
 import type { Message, MessageStatus, OutboundDelivery, RetryPolicy, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 function utf8ToBase64(s: string): string {
   const bytes = new TextEncoder().encode(s);
@@ -141,5 +142,9 @@ export class MessageService {
     const encoded = { ...input, payload: utf8ToBase64(input.payload) };
     const data = await this.transport.execute<{ sendDynamicMessage: OutboundDelivery }>(SEND_DYNAMIC_MUTATION, { input: encoded });
     return data.sendDynamicMessage;
+  }
+
+  iterate(options?: ListMessagesOptions): AsyncGenerator<Message, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

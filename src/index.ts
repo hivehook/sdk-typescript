@@ -1,6 +1,8 @@
 export { HivehookClient } from "./client.js";
 export type { HivehookClientOptions } from "./client.js";
 export type { ExecuteOptions } from "./transport.js";
+export { paginate } from "./pagination.js";
+export type { Page } from "./pagination.js";
 export * from "./types.js";
 export * from "./errors.js";
 

@@ -1,5 +1,6 @@
 import type { Transformation, TransformTestResult, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateTransformationInput {
   name: string;
@@ -131,5 +132,9 @@ export class TransformationService {
   async test(input: TestTransformationInput): Promise<TransformTestResult> {
     const data = await this.transport.execute<{ testTransformation: TransformTestResult }>(TEST_MUTATION, { input });
     return data.testTransformation;
+  }
+
+  iterate(options?: ListTransformationsOptions): AsyncGenerator<Transformation, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

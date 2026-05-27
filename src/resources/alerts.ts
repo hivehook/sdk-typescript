@@ -1,5 +1,6 @@
 import type { AlertRule, AlertChannel, EmailAlertConfig, SlackAlertConfig, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateAlertRuleInput {
   name: string;
@@ -126,5 +127,9 @@ export class AlertRuleService {
   async test(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ testAlertRule: boolean }>(TEST_MUTATION, { id });
     return data.testAlertRule;
+  }
+
+  iterate(options?: ListAlertRulesOptions): AsyncGenerator<AlertRule, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

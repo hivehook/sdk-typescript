@@ -1,5 +1,6 @@
 import type { Endpoint, EndpointStatus, DestinationType, FilterConfig, RetryPolicy, PageInfo, ListOptions, AuthType, OAuth2Config, DeliveryMode, OutboundDelivery, HealthConfig } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateEndpointInput {
   applicationId: string;
@@ -243,5 +244,9 @@ export class EndpointService {
   async regeneratePollApiKey(endpointId: string): Promise<Endpoint> {
     const data = await this.transport.execute<{ regenerateOutboundPollApiKey: Endpoint }>(REGENERATE_OUTBOUND_POLL_API_KEY_MUTATION, { endpointId });
     return data.regenerateOutboundPollApiKey;
+  }
+
+  iterate(options?: ListEndpointsOptions): AsyncGenerator<Endpoint, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

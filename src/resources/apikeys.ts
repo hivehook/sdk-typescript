@@ -1,5 +1,6 @@
 import type { APIKey, APIKeyWithSecret, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateAPIKeyInput {
   name: string;
@@ -81,5 +82,9 @@ export class APIKeyService {
   async revoke(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ revokeAPIKey: boolean }>(REVOKE_MUTATION, { id });
     return data.revokeAPIKey;
+  }
+
+  iterate(options?: ListOptions): AsyncGenerator<APIKey, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

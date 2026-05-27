@@ -1,5 +1,6 @@
 import type { Bookmark, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateBookmarkInput {
   eventId: string;
@@ -80,5 +81,9 @@ export class BookmarkService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteBookmark: boolean }>(DELETE_MUTATION, { id });
     return data.deleteBookmark;
+  }
+
+  iterate(options?: ListBookmarksOptions): AsyncGenerator<Bookmark, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

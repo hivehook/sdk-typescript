@@ -1,5 +1,6 @@
 import type { EventTypeSchema, PageInfo, ListOptions } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export interface CreateEventTypeSchemaInput {
   eventType: string;
@@ -96,5 +97,9 @@ export class EventTypeSchemaService {
   async delete(id: string): Promise<boolean> {
     const data = await this.transport.execute<{ deleteEventTypeSchema: boolean }>(DELETE_MUTATION, { id });
     return data.deleteEventTypeSchema;
+  }
+
+  iterate(options?: ListOptions): AsyncGenerator<EventTypeSchema, void, unknown> {
+    return paginate((o) => this.list(o), options);
   }
 }

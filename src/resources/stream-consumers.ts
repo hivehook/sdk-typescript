@@ -1,5 +1,6 @@
 import type { PageInfo, ListOptions, StreamConsumer } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
+import { paginate } from "../pagination.js";
 
 export type { StreamConsumer };
 
@@ -88,5 +89,9 @@ export class StreamConsumerService {
   async advanceCursor(id: string, sequence: number): Promise<StreamConsumer> {
     const data = await this.transport.execute<{ advanceConsumerCursor: StreamConsumer }>(ADVANCE_CURSOR_MUTATION, { id, sequence });
     return data.advanceConsumerCursor;
+  }
+
+  iterate(streamId: string, options?: ListOptions): AsyncGenerator<StreamConsumer, void, unknown> {
+    return paginate((o) => this.list(streamId, o), options);
   }
 }
