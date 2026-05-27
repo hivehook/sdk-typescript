@@ -1,7 +1,7 @@
 {
   "name": "@hivehook/sdk",
   "version": "0.1.1",
-  "description": "Official Hivehook TypeScript SDK",
+  "description": "Official TypeScript client for Hivehook, webhook infrastructure for modern teams (inbound and outbound).",
   "keywords": ["hivehook", "webhook", "webhooks", "graphql", "sdk"],
   "homepage": "https://hivehook.com",
   "repository": {
