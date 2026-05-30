@@ -14,6 +14,11 @@ export type { ListDeliveriesOptions } from "./resources/deliveries.js";
 export type { ListDLQOptions } from "./resources/dlq.js";
 export type { CreateAPIKeyInput } from "./resources/apikeys.js";
 export type { CreateAlertRuleInput, UpdateAlertRuleInput, ListAlertRulesOptions } from "./resources/alerts.js";
+export type {
+  CreateMetaEventConfigInput,
+  UpdateMetaEventConfigInput,
+} from "./resources/meta-event-configs.js";
+export type { ListStreamEntriesOptions } from "./resources/streams.js";
 export type { CreateBookmarkInput, ListBookmarksOptions } from "./resources/bookmarks.js";
 export type { CreateEventTypeSchemaInput, UpdateEventTypeSchemaInput } from "./resources/event-type-schemas.js";
 export type { CreateApplicationInput, UpdateApplicationInput } from "./resources/applications.js";

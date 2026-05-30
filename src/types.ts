@@ -470,3 +470,23 @@ export interface StreamSink {
   lastFlushedAt: string | null;
   createdAt: string;
 }
+
+export interface StreamEntry {
+  id: string;
+  streamId: string;
+  sequence: number;
+  messageId: string | null;
+  eventType: string;
+  payload: string;
+  createdAt: string;
+}
+
+export interface MetaEventConfig {
+  id: string;
+  name: string;
+  url: string;
+  signingSecret: string;
+  eventTypes: string[];
+  enabled: boolean;
+  createdAt: string;
+}

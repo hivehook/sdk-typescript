@@ -1,8 +1,13 @@
-import type { PageInfo, ListOptions, Stream, StreamStatus } from "../types.js";
+import type { PageInfo, ListOptions, Stream, StreamEntry, StreamStatus } from "../types.js";
 import type { GraphQLTransport } from "../transport.js";
 import { paginate } from "../pagination.js";
 
-export type { Stream };
+export type { Stream, StreamEntry };
+
+export interface ListStreamEntriesOptions {
+  afterSequence?: number;
+  limit?: number;
+}
 
 export interface CreateStreamInput {
   applicationId: string;
@@ -109,4 +114,33 @@ export class StreamService {
   iterate(options?: ListStreamsOptions): AsyncGenerator<Stream, void, unknown> {
     return paginate((o) => this.list(o), options);
   }
+
+  async entries(streamId: string, options?: ListStreamEntriesOptions): Promise<{ nodes: StreamEntry[]; pageInfo: PageInfo }> {
+    const variables: Record<string, unknown> = { streamId };
+    if (options?.afterSequence !== undefined) variables.afterSequence = options.afterSequence;
+    if (options?.limit !== undefined) variables.limit = options.limit;
+    const data = await this.transport.execute<{
+      streamEntries: { nodes: StreamEntry[]; pageInfo: PageInfo };
+    }>(STREAM_ENTRIES_QUERY, variables);
+    return data.streamEntries;
+  }
 }
+
+const STREAM_ENTRY_FRAGMENT = `
+  id
+  streamId
+  sequence
+  messageId
+  eventType
+  payload
+  createdAt
+`;
+
+const STREAM_ENTRIES_QUERY = `
+  query ListStreamEntries($streamId: UUID!, $afterSequence: Int, $limit: Int) {
+    streamEntries(streamId: $streamId, afterSequence: $afterSequence, limit: $limit) {
+      nodes { ${STREAM_ENTRY_FRAGMENT} }
+      pageInfo { total limit offset endCursor hasNextPage }
+    }
+  }
+`;

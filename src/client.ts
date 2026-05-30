@@ -23,6 +23,7 @@ import { StreamSinkService } from "./resources/stream-sinks.js";
 import { OrganizationService } from "./resources/organizations.js";
 import { UserService } from "./resources/users.js";
 import { AuditLogService } from "./resources/audit-logs.js";
+import { MetaEventConfigService } from "./resources/meta-event-configs.js";
 
 interface HivehookClientOptions {
   apiKey?: string;
@@ -57,6 +58,7 @@ class HivehookClient {
   organizations: OrganizationService;
   users: UserService;
   auditLogs: AuditLogService;
+  metaEventConfigs: MetaEventConfigService;
 
   constructor(options: HivehookClientOptions = {}) {
     const transport = new GraphQLTransport(
@@ -89,6 +91,7 @@ class HivehookClient {
     this.organizations = new OrganizationService(transport);
     this.users = new UserService(transport);
     this.auditLogs = new AuditLogService(transport);
+    this.metaEventConfigs = new MetaEventConfigService(transport);
   }
 }
 
